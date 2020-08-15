@@ -1,0 +1,12 @@
+GAME WORLD:
+Boardsize:10
+Screensize:700x600
+Tilesize:10
+
+SNAKE:
+Snake speed:6
+Immortal:False
+Move through walls:False
+
+MULTIPLAYER:
+Two player:False
