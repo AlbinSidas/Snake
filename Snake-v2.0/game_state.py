@@ -4,13 +4,21 @@ import pygame
 from fruit import Fruit
 import random
 
+import os
+import sys
+
+sys.path.append(os.getcwd() + "/inputoptions/")
+from agent_interface import Agent_Interface
+from astar import AStar
+
+
 class Game_State:
 
     def __init__(self, config):
         self.world = game_world.World(config)
         self.world_list = self.world.world
         self.python = snake.Snake(self.world_list, config)
-
+        print(self.world_list)
         #etc
 
         # screen = screen_window # as this should be the same screen as world is written at

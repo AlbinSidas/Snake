@@ -1,4 +1,11 @@
-TODO:
+# Snake By A
+This is building on some of the earlier development within the first directory. This is implemented following object-orientation but have been written over a very long period of time. Mainly the base of the gamestate gameworld and menus were written during or around my first year of studies, while I've now (early year 3) begun studying AI and will extend this project to implement different AI techniques for the snake to move around.
+
+## Author
+Albin Sidås <br>
+albinsidas@gmail.com
+
+## TODO:
 
 1. Refreshrate hämtas inte från config
 
