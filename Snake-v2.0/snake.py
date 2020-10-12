@@ -84,7 +84,6 @@ class Snake:
 
         self.direction = key        
 
-
     def body_update(self):
         """
         Checks the previous body part and updates position after that.

@@ -7,10 +7,6 @@ import random
 class Game_State:
 
     def __init__(self, config):
-        #containers etc
-        #world
-
-        #ska världen hålla koll på ormen eller ska ormen veta om den hamnar utanför ramen. 
         self.world = game_world.World(config)
         self.world_list = self.world.world
         self.python = snake.Snake(self.world_list, config)
@@ -57,8 +53,13 @@ class Game_State:
             self.python.update(key_l.pop(0), self.world_list, fruit_list)
 
             if not self.python.alive:
-                #TODO
+                # TODO
                 # Om en AI ska kunna träna måste den startas om automatiskt här.
+                # Speciellt om en Qlearning ska kunna tränas*** 
+                # Isåfall är det att reseta ormen och poängen och starta om spelet? 
+                # Se till att modellen försöker maximera poängen och en "död" ger stora
+                # minuspoäng
+
                 game_over = True
 
         
