@@ -68,7 +68,9 @@ class Menu:
                 elif key == "13":
                     # TODO
                     if choice == 0:
+                        print(self.config_object)
                         start_game = game_state.Game_State(self.config_object)
+
                         outcome = start_game.start(screen, font)
                         
                     elif choice == 1:

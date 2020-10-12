@@ -1,7 +1,7 @@
 import snake
 import game_world
 import pygame
-import fruit
+from fruit import Fruit
 import random
 
 class Game_State:
@@ -35,7 +35,11 @@ class Game_State:
                 self.place_fruit(self.world_list, self.python, fruit_list)
             
             self.world.render(screen, self.world_list, self.python, fruit_list, font)
-        
+
+            """
+            Här inväntar spelet en input från en användare
+            #TODO
+            """
             for event in pygame.event.get():
                 pressed_key = "Not pressed"
             
@@ -53,10 +57,12 @@ class Game_State:
             self.python.update(key_l.pop(0), self.world_list, fruit_list)
 
             if not self.python.alive:
+                #TODO
+                # Om en AI ska kunna träna måste den startas om automatiskt här.
                 game_over = True
 
         
-        #detta obj håller paus screen?
+        
         return outcome
     
     def place_fruit(self, world, snake, fruit_list):
@@ -70,14 +76,9 @@ class Game_State:
         
         x_coord = random.randrange(window_min_x, window_max_x, 10)
         y_coord = random.randrange(window_min_y, window_max_y, 10)
-        fruit_pos = (y_coord, x_coord)
+        fruit_pos = (x_coord, y_coord)
         
         if list(fruit_pos) in snake.body:
             self.place_fruit(self.world_list, snake, fruit_list)
         else:
-            fruiit = fruit.Fruit(fruit_pos)
-            fruit_list.append(fruiit)
-
-        #def render(self):
-            
-        #return
+            fruit_list.append(Fruit(fruit_pos))

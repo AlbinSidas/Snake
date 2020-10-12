@@ -13,6 +13,7 @@ class Snake:
 
     def update(self, key, world, fruit_list):
         self.move(key)
+
         if not self.immortal:
             self.check_dead(world)
         
@@ -21,7 +22,7 @@ class Snake:
     def check_dead(self, world):
         head = tuple(self.body[0])
         self.alive = False
-        
+                
         for row in world:
             if head in row:
                 self.alive = True

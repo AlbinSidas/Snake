@@ -16,7 +16,6 @@ class World:
 
         self.world = self.create_map()
         
-        
     def create_map(self):
         """
         Returns a list with lists of tuples which symbolize every tile
@@ -64,6 +63,7 @@ class World:
         """
         Handles all drawing within the world rectangle. 
         """
+
         for lines in world:
             for tiles in lines:
                 for body in snake.body:
@@ -72,10 +72,11 @@ class World:
                         #Checks where the head of the snake is on the board.
                         pygame.draw.rect(screen, 0,(body[0], body[1],
                                                     self.tile_size, self.tile_size))
-                    
-                    if fruit_list[0].pos == tiles:
-                        pygame.draw.rect(screen, 155,
-                                         (tiles[0], tiles[1], self.tile_size, self.tile_size))
+                
+                
+                if fruit_list[0].pos == tiles:
+                    pygame.draw.rect(screen, 155,
+                                    (tiles[0], tiles[1], self.tile_size, self.tile_size))
                 #Draws every rectangle in the playingfield
                 #pygame.draw.rect(screen, 0,(tiles[0], tiles[1],
                 #                          tile_width, tile_height), 1)

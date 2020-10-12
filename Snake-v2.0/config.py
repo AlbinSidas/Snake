@@ -9,6 +9,8 @@ class Config:
 
         with open(filename, 'r') as f:
             self.settings = self.setting_categories(f)
+
+        print(self.settings)
             
     def setting_categories(self, config_file):
         settings = {}
@@ -23,7 +25,7 @@ class Config:
                     line[1] = line[1][:-1]
 
                 if line[1] == "True" or line[1] == "False":
-                    line[1] = bool(line[1])
+                    line[1] = True if line[1] == "True" else False
                     
                 settings[line[0]] = line[1]
 
@@ -230,7 +232,6 @@ class Config:
             
 if __name__ == '__main__':
     #   import pygame.locals
-
     pygame.init()
     screen = pygame.display.set_mode((700, 600))
     font = pygame.font.SysFont('Comic Sans MS', 30)
