@@ -70,16 +70,23 @@ class Snake:
         #right = 275
         #left = 276
 
-        if key == 273:
+        print(key)
+
+        #up 119 W
+        #down 115 S
+        #right 97 D
+        #left 100 A
+
+        if key == 273 or key == 119:
             self.body[0][1] -= 10
                 
-        elif key == 274:
+        elif key == 274 or key == 115:
             self.body[0][1] += 10
             
-        elif key == 275:
+        elif key == 275 or key == 100:
             self.body[0][0] += 10
                 
-        elif key == 276:
+        elif key == 276 or key == 97:
             self.body[0][0] -= 10
 
         # TODO Tänk över om direciton kommer att stämma genom att

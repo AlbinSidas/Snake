@@ -6,9 +6,28 @@ class AStar():
         height = len(world)
         self.world_view = [[0] * (breadth - 1) for i in range(height)]
 
-    def get_Action(self, world, snake, fruit):
+    def get_action(self, world, snake, fruit, pygame):
+        """
+        #up 119 W
+        #down 115 S
+        #right 97 D
+        #left 100 A
+        """
+        fruit_index = self.find_fruit(world, fruit)
 
-        pass
+        for event in pygame.event.get():
+            if event.type == pygame.locals.QUIT:
+                return "Quit"
+    
+    def find_fruit(self, world, fruit):
+
+        for row in range(len(world)):
+            for y_axis in range(len(world[row])):
+                #print("Världen: ", world[row][y_axis])
+                #print("Frukt: ", fruit.pos)
+                if world[row][y_axis] == fruit.pos:
+                    #print("HITTAT FRUKT")
+                    return (row, y_axis)
 
 if __name__ == '__main__':
     world = [

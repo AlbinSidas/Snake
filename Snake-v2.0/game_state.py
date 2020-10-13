@@ -9,6 +9,7 @@ import sys
 
 sys.path.append(os.getcwd() + "/inputoptions/")
 from agent_interface import Agent_Interface
+from human import Human
 from astar import AStar
 
 
@@ -18,7 +19,6 @@ class Game_State:
         self.world = game_world.World(config)
         self.world_list = self.world.world
         self.python = snake.Snake(self.world_list, config)
-        print(self.world_list)
         #etc
 
         # screen = screen_window # as this should be the same screen as world is written at
@@ -34,31 +34,22 @@ class Game_State:
         key_l = []
         outcome = []
 
+        #interface = Agent_Interface(Human())
+        interface = Agent_Interface(AStar(self.world_list))
+
         while not game_over:
             if len(fruit_list) == 0:
                 self.place_fruit(self.world_list, self.python, fruit_list)
             
             self.world.render(screen, self.world_list, self.python, fruit_list, font)
 
-            """
-            Här inväntar spelet en input från en användare
-            #TODO
-            """
-            for event in pygame.event.get():
-                pressed_key = "Not pressed"
+            action = interface.get_action(self.world_list, self.python, fruit_list[0], pygame)
             
-                if event.type == pygame.locals.QUIT:
-                    game_over = True
-                elif event.type == pygame.locals.KEYDOWN:
-                    pressed_key = event.key
-                
-                key_l.append(pressed_key)
-        
-            if len(key_l) == 0:
-                key_l.append("Not pressed")
-
+            if action == "Quit":
+                game_over = True
+            
             clock.tick(8)
-            self.python.update(key_l.pop(0), self.world_list, fruit_list)
+            self.python.update(action, self.world_list, fruit_list)
 
             if not self.python.alive:
                 # TODO
@@ -70,8 +61,6 @@ class Game_State:
 
                 game_over = True
 
-        
-        
         return outcome
     
     def place_fruit(self, world, snake, fruit_list):
