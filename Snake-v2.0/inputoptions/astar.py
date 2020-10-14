@@ -7,45 +7,35 @@ class AStar():
         self.world_view = [[0] * (breadth - 1) for i in range(height)]
 
     def get_action(self, world, snake, fruit, pygame):
-        """
-        #up 119 W
-        #down 115 S
-        #right 97 D
-        #left 100 A
-        """
-        
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 return "Quit"
         
+        snake_head = self.get_snake_head(world, snake)
+
         if len(self.current_path) != 0:
+            return self.astar_action(snake_head)
             
-            return
-            
-        fruit_pos = self.place_obsticals(snake, fruit, world)        
+        # Inject the snakebody and fruits into own worldview
+        fruit_pos = self.place_obsticals(snake, fruit, world) 
+        
+        # Build the heuristic cost map
         self.build_starmap(fruit_pos)
         
-        self.get_best_direction(world, snake)
-
-        for r in self.world_view:
-            print(r)
-
-
-        """
-        Titta på var huvud är, kolla sedan på current_path om den inte är tom
-        då ska ormen ta den SISTA i listan (
-            current_path.pop()  )
+        # Builds the current path
+        self.build_path(snake_head)
         
-        Utifrån den koordinaten, skicka tillbaka en action som säger var ormen ska gå.
+        #Turn the path around to not move the whole array for each pop
+        self.current_path.reverse()
 
-        """
-    
-    def get_best_direction(self, world, snake):
-        """
-        TODO
-        DENNA HITTAR BARA HUVUDET JUST NU GANSKA VÄRDELÖS
-        """
+        return self.astar_action(snake_head)
+
+    def astar_action(self, head):
+        print(self.current_path)
+        go_to = self.current_path.pop()
         
+        action = "No action"
+                
         # INT VALUE FOR DIRECTIONS
         #up = 273
         #down = 274
@@ -57,84 +47,62 @@ class AStar():
         #right 97 D
         #left 100 A
 
-        #direction = snake.direction
+        if go_to[0] < head[0]:
+            # Target is above head
+            return 119
 
+        elif go_to[0] > head [0]:
+            # Target is below head
+            return 115
+
+        if go_to[1] < head[1]:
+            # Target left of the head
+            return 276
+
+        elif go_to[1] > head [1]:
+            # Target to the right of the head
+            return 275
+
+    def get_snake_head(self, world, snake):
         head = tuple(snake.body[0])
 
-        def find_head_in_world(world, snake):
-            for row in range(len(world)):
-                for ycell in range(len(world[row])):
-                    if world[row][ycell] == head:
-                        
-                        #snake_head_indexes = 
-                        return (row, ycell)
-                        #break 
-
-        snake_head_indexes = find_head_in_world(world, snake)
-        
-        self.build_path(snake_head_indexes)
-
-        """
-        Sätt det nedan till en while loop tills målet 
-        är hittat för att bygga upp pathen till målet
-        
-        När jag fått ut direction values och tillhörande koordinater (alltså i vilka index
-        som ormhuvudet nu står i (vilket är nästa steg efter en iteration)) så kör det igen
-
-        En rekursiv funktion ^
-        """
-
+        for row in range(len(world)):
+            for ycell in range(len(world[row])):
+                if world[row][ycell] == head:                    
+                    return (row, ycell)
 
     def build_path(self, snake_head):
         direction_values = self.get_direction_values(snake_head)
         
         minimum = 9999
         go_to = None
+        
         for direction in direction_values:
             if direction[0] < minimum: 
                 minimum = direction[0]
                 go_to = direction[1]
 
-
         if minimum == -1:
             self.current_path.append(go_to)
             return 
         else:
-            #print(minimum)
             self.current_path.append(go_to)
             return self.build_path(go_to)
 
-        #print(self.current_path)
-        #print(minimum)
-        #print(go_to)
-        """
-        Titta runt ormen i self.world_view
-        hita maxvärdet runt ormen
-        skicka tillbaka rätt intväde baserat på detta
-        """
     
     def get_direction_values(self, snake_head):
-        
-        """
-        kontrollera att x - 1, x + 1, y - 1, y + 1 finns i world_view
-        """
-        
+        # Outer bounds of the world
         max_height = len(self.world_view)
         max_width = len(self.world_view[0])
-        
-        """
-        Kanske måste returnera vilken index i världen den är i den nya
-        så jag kan bygga en path
-        """
 
-        # snake_head = (y, x)
+        # Add the values and coordinates for the next move
         direction_values = []
         if snake_head[0] - 1 >= 0 and snake_head[0] < max_height:
             
             move_head_to = (snake_head[0] - 1, snake_head[1])
             direction_values.append([self.world_view[snake_head[0] - 1][snake_head[1]], move_head_to])
         else:
-            direction_values.append(9999)
+            direction_values.append([9999, (None,None)])
 
         if snake_head[0] + 1 < max_height:
             move_head_to = (snake_head[0] + 1, snake_head[1])
@@ -142,7 +110,7 @@ class AStar():
 
             #direction_values.append(self.world_view[snake_head[0] + 1][snake_head[1]], ([snake_head[0] + 1, snake_head[1]))
         else:
-            direction_values.append(9999)
+            direction_values.append([9999, (None,None)])
 
         if snake_head[1] - 1 >= 0 and snake_head[1] < max_width:
             move_head_to = (snake_head[0], snake_head[1] - 1)
@@ -150,7 +118,7 @@ class AStar():
 
             #direction_values.append(self.world_view[snake_head[0]][snake_head[1] - 1], (snake_head[0], snake_head[1] - 1))
         else:
-            direction_values.append(9999)
+            direction_values.append([9999, (None,None)])
 
         if snake_head[1] + 1 < max_width:
             move_head_to = (snake_head[0], snake_head[1] + 1)
@@ -158,7 +126,7 @@ class AStar():
 
             #direction_values.append(self.world_view[snake_head[0]][snake_head[1] + 1], (snake_head[0], snake_head[1] + 1))
         else:
-            direction_values.append(9999)
+            direction_values.append([9999, (None,None)])
 
         
         return direction_values
@@ -169,12 +137,6 @@ class AStar():
         # (xaxis, yaxis)
         fruit_pos = None
 
-        """
-        Kanske kan vara så att det går att endast göra denna om en nuvarande path ej finns, kan spara
-        komplexitet
-
-        if len(current_path) == 0:
-        """
         # Place the snake and fruit on own world_view
         for row in range(len(world)):
             for cell in range(len(world[row])):
