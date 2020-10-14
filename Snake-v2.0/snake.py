@@ -70,7 +70,7 @@ class Snake:
         #right = 275
         #left = 276
 
-        print(key)
+        #print(key)
 
         #up 119 W
         #down 115 S

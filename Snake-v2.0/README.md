@@ -13,3 +13,10 @@ albinsidas@gmail.com
 
 3. Implementera ett gäng modeller att testa runt med, börja med search och sedan gå över och testa Qlearning
 den sistnämnda kommer dock kräva ändringar av refreshrate etc. för träning
+
+4. Vore nice att lösa en Hamilton-graf implementation för att garantera att alltid klara hela kartan (<br>
+    hamiltongraf = besöka alla noder och bågar endast en gång <br>
+    Om detta är möjligt kommer ormen följa den graphiterationen genom hela kartan och därmed förskra att <br>
+    den alltid klarar uppgiften men kommer troligen ta lång tid eftersom den går genom alla noder för varje iteration och frukt.<br>
+
+)<br>
