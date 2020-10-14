@@ -13,36 +13,57 @@ class AStar():
         #right 97 D
         #left 100 A
         """
-        fruit_index = self.find_fruit(world, fruit)
-
+        
         for event in pygame.event.get():
             if event.type == pygame.locals.QUIT:
                 return "Quit"
-    
-    def find_fruit(self, world, fruit):
 
+        self.place_obsticals(snake, fruit, world)
+
+        
+    def place_obsticals(self, snake, fruit, world):
+
+        # (xaxis, yaxis)
+        fruit_pos = None
+
+        """
+        Kanske kan vara så att det går att endast göra denna om en nuvarande path ej finns, kan spara
+        komplexitet
+
+        if len(current_path) == 0:
+        """
+        # Place the snake and fruit on own world_view
         for row in range(len(world)):
-            for y_axis in range(len(world[row])):
-                #print("Världen: ", world[row][y_axis])
-                #print("Frukt: ", fruit.pos)
-                if world[row][y_axis] == fruit.pos:
-                    #print("HITTAT FRUKT")
-                    return (row, y_axis)
+            for cell in range(len(world[row])):
+                for body_part in snake.body:
 
-if __name__ == '__main__':
-    world = [
-        [(175, 75), (185, 75), (195, 75), (205, 75), (215, 75), (225, 75), (235, 75), (245, 75), (255, 75), (265, 75), (275, 75), (285, 75)], 
-        [(175, 85), (185, 85), (195, 85), (205, 85), (215, 85), (225, 85), (235, 85), (245, 85), (255, 85), (265, 85), (275, 85), (285, 85)], 
-        [(175, 95), (185, 95), (195, 95), (205, 95), (215, 95), (225, 95), (235, 95), (245, 95), (255, 95), (265, 95), (275, 95), (285, 95)], 
-        [(175, 105), (185, 105), (195, 105), (205, 105), (215, 105), (225, 105), (235, 105), (245, 105), (255, 105), (265, 105), (275, 105), (285, 105)], 
-        [(175, 115), (185, 115), (195, 115), (205, 115), (215, 115), (225, 115), (235, 115), (245, 115), (255, 115), (265, 115), (275, 115), (285, 115)], 
-        [(175, 125), (185, 125), (195, 125), (205, 125), (215, 125), (225, 125), (235, 125), (245, 125), (255, 125), (265, 125), (275, 125), (285, 125)], 
-        [(175, 135), (185, 135), (195, 135), (205, 135), (215, 135), (225, 135), (235, 135), (245, 135), (255, 135), (265, 135), (275, 135), (285, 135)], 
-        [(175, 145), (185, 145), (195, 145), (205, 145), (215, 145), (225, 145), (235, 145), (245, 145), (255, 145), (265, 145), (275, 145), (285, 145)], 
-        [(175, 155), (185, 155), (195, 155), (205, 155), (215, 155), (225, 155), (235, 155), (245, 155), (255, 155), (265, 155), (275, 155), (285, 155)], 
-        [(175, 165), (185, 165), (195, 165), (205, 165), (215, 165), (225, 165), (235, 165), (245, 165), (255, 165), (265, 165), (275, 165), (285, 165)], 
-        [(175, 175), (185, 175), (195, 175), (205, 175), (215, 175), (225, 175), (235, 175), (245, 175), (255, 175), (265, 175), (275, 175), (285, 175)], 
-        [(175, 185), (185, 185), (195, 185), (205, 185), (215, 185), (225, 185), (235, 185), (245, 185), (255, 185), (265, 185), (275, 185), (285, 185)]
-    ]
+                    if tuple(body_part) == world[row][cell]:
+                        # Set a obsticle within the A* world_view
+                        self.world_view[row][cell] = -1
+                    
+                    elif fruit.pos == world[row][cell]:
+                        fruit_pos = (cell, row)
 
-    model = AStar(world)
+                        self.world_view[row][cell] = 9999
+        
+        # 
+        for row in range(len(self.world_view)):
+            for value in range(len(self.world_view[row])):
+
+                # Fruits and obsticles
+                if self.world_view[row][value] == 9999 or self.world_view[row][value] == -1:
+                    continue
+
+                # From the perspective of the fruit, make a heuristic cost map
+                # to then be able to create a path from the perspective of the snake
+                # to the fruit.
+
+                difference_y = abs(fruit_pos[1] - row)
+                difference_x = abs(fruit_pos[0] - value)
+                cell_value = difference_x + difference_y
+                self.world_view[row][value] = cell_value
+
+
+        for r in self.world_view:
+            print(r)
+
