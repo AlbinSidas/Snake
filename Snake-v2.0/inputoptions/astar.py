@@ -2,6 +2,7 @@
 class AStar():
     def __init__(self, world):
         self.current_path = []
+        self.history = []
         breadth = len(world[0])
         height = len(world)
         self.world_view = [[0] * (breadth - 1) for i in range(height)]
@@ -31,7 +32,6 @@ class AStar():
         return self.astar_action(snake_head)
 
     def astar_action(self, head):
-        print(self.current_path)
         go_to = self.current_path.pop()
         
         action = "No action"
@@ -73,20 +73,38 @@ class AStar():
 
     def build_path(self, snake_head):
         direction_values = self.get_direction_values(snake_head)
-        
-        minimum = 9999
+ 
+        minimum = 99999
         go_to = None
         
+        """
+        Problem att denna är None
+        """
+        print("innan for")
+        """
+        Kan jag bygga fler paths och sedan se vilken som blir billigast?
+
+        I nuläget får den inte gå tillbaka i en path den redan varit i och detta gör
+        att ormen får problem av någon anledning
+
+        Tar ej bort gamla 9999 där ormen varit
+        """
+        
         for direction in direction_values:
-            if direction[0] < minimum: 
+            if direction[0] < minimum and direction[1] not in self.current_path:
                 minimum = direction[0]
                 go_to = direction[1]
+                #continue
+        #print(self.world_view)
+        for r in self.world_view:
+            print(r)
 
         if minimum == -1:
             self.current_path.append(go_to)
             return 
         else:
             self.current_path.append(go_to)
+            
             return self.build_path(go_to)
 
     
@@ -98,59 +116,55 @@ class AStar():
         # Add the values and coordinates for the next move
         direction_values = []
         if snake_head[0] - 1 >= 0 and snake_head[0] < max_height:
-            
             move_head_to = (snake_head[0] - 1, snake_head[1])
             direction_values.append([self.world_view[snake_head[0] - 1][snake_head[1]], move_head_to])
         else:
-            direction_values.append([9999, (None,None)])
+            # If the values are not within the map
+            direction_values.append([9999, snake_head])
 
         if snake_head[0] + 1 < max_height:
             move_head_to = (snake_head[0] + 1, snake_head[1])
             direction_values.append([self.world_view[snake_head[0] + 1][snake_head[1]], move_head_to])
-
-            #direction_values.append(self.world_view[snake_head[0] + 1][snake_head[1]], ([snake_head[0] + 1, snake_head[1]))
         else:
-            direction_values.append([9999, (None,None)])
+            direction_values.append([9999, snake_head])
 
         if snake_head[1] - 1 >= 0 and snake_head[1] < max_width:
             move_head_to = (snake_head[0], snake_head[1] - 1)
             direction_values.append([self.world_view[snake_head[0]][snake_head[1] - 1], move_head_to])
-
-            #direction_values.append(self.world_view[snake_head[0]][snake_head[1] - 1], (snake_head[0], snake_head[1] - 1))
         else:
-            direction_values.append([9999, (None,None)])
+            direction_values.append([9999, snake_head])
 
         if snake_head[1] + 1 < max_width:
             move_head_to = (snake_head[0], snake_head[1] + 1)
             direction_values.append([self.world_view[snake_head[0]][snake_head[1] + 1], move_head_to])
-
-            #direction_values.append(self.world_view[snake_head[0]][snake_head[1] + 1], (snake_head[0], snake_head[1] + 1))
         else:
-            direction_values.append([9999, (None,None)])
+            direction_values.append([9999, snake_head])
 
-        
         return direction_values
-
 
     def place_obsticals(self, snake, fruit, world):
 
         # (xaxis, yaxis)
         fruit_pos = None
+        
+        # Reset world_view map
+        self.world_view = [[0] * (len(world[0]) - 1) for i in range(len(world))]
 
         # Place the snake and fruit on own world_view
         for row in range(len(world)):
             for cell in range(len(world[row])):
+        
                 for body_part in snake.body:
-
                     if tuple(body_part) == world[row][cell]:
                         # Set a obsticle within the A* world_view
                         self.world_view[row][cell] = 9999
                     
-                    elif fruit.pos == world[row][cell]:
-                        fruit_pos = (cell, row)
+                if fruit.pos == world[row][cell]:
+                    fruit_pos = (cell, row)
 
-                        self.world_view[row][cell] = -1
-        
+                    self.world_view[row][cell] = -1
+
+                
         return fruit_pos
 
     def build_starmap(self, fruit_pos):
