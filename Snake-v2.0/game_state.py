@@ -6,12 +6,11 @@ import random
 
 import os
 import sys
-
 sys.path.append(os.getcwd() + "/inputoptions/")
 from agent_interface import Agent_Interface
 from human import Human
+from hamiltonian import Hamilton
 from astar import AStar
-
 
 class Game_State:
 
@@ -35,7 +34,9 @@ class Game_State:
         outcome = []
 
         #interface = Agent_Interface(Human())
-        interface = Agent_Interface(AStar(self.world_list))
+        #interface = Agent_Interface(AStar(self.world_list))
+        interface = Agent_Interface(Hamilton(self.world_list))
+
 
         while not game_over:
             if len(fruit_list) == 0:
@@ -48,7 +49,8 @@ class Game_State:
             if action == "Quit":
                 game_over = True
             
-            clock.tick(8)
+            #clock.tick(8)
+            clock.tick(20)
             self.python.update(action, self.world_list, fruit_list)
 
             if not self.python.alive:

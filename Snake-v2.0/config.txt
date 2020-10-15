@@ -1,5 +1,5 @@
 GAME WORLD:
-Boardsize:12
+Boardsize:14
 Screensize:700x600
 Tilesize:10
 

@@ -89,8 +89,6 @@ class Snake:
         elif key == 276 or key == 97:
             self.body[0][0] -= 10
 
-        # TODO Tänk över om direciton kommer att stämma genom att
-        # endast titta på vilken sista key som blev klickad är korrekt (tänk ned och sväng ex)
         self.direction = key        
 
     def body_update(self):

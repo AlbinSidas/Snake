@@ -1,5 +1,10 @@
 
 class AStar():
+    """
+    Should implement within the catch statement that
+    a new path is being calculated with other order of 
+    actions to see if it can find a path that conforms
+    """
     def __init__(self, world):
         self.current_path = []
         self.history = []
@@ -24,11 +29,29 @@ class AStar():
         self.build_starmap(fruit_pos)
         
         # Builds the current path
-        self.build_path(snake_head)
-        
+        try: 
+            self.build_path(snake_head)
+        except:
+            print("Har en ickefullpath")
+            """
+            Kan jag här försöka hantera att den ska göra en path där 
+            den bara håller sig vid liv på ytan den har just då?
+
+            Genom att ta den första i pathen blir det problematiskt eftersom den kommer gå närmare att inte ha någonstans att gå
+
+            randomisera ordningen på actionsen ? kan jag på något sätt försöka ta en annan path
+
+            möjligen söka efter path i en annan ordning göra build path med annan ordning
+            """
+
+            self.current_path.reverse()
+            action = self.astar_action(snake_head) 
+            self.current_path = []
+            return action
+
         #Turn the path around to not move the whole array for each pop
         self.current_path.reverse()
-
+        print(self.current_path)
         return self.astar_action(snake_head)
 
     def astar_action(self, head):
@@ -74,31 +97,32 @@ class AStar():
     def build_path(self, snake_head):
         direction_values = self.get_direction_values(snake_head)
  
-        minimum = 99999
+        minimum = 9999
+        #minimum = 99999
+        
         go_to = None
         
-        """
-        Problem att denna är None
-        """
-        print("innan for")
-        """
-        Kan jag bygga fler paths och sedan se vilken som blir billigast?
-
-        I nuläget får den inte gå tillbaka i en path den redan varit i och detta gör
-        att ormen får problem av någon anledning
-
-        Tar ej bort gamla 9999 där ormen varit
-        """
         
         for direction in direction_values:
+            
+            """
+            Kollar directions för att se om det går att hitta någon väg som är mindre 
+            och försäkrar sig om att om det är mindre inte finns i pathen sedan tidigare 
+
+            Om en riktning föreslås igen så har inte en optimal väg valts
+            """
+            
             if direction[0] < minimum and direction[1] not in self.current_path:
                 minimum = direction[0]
                 go_to = direction[1]
-                #continue
-        #print(self.world_view)
+        """
+        print()
+        print(self.current_path) 
+        print()
+
         for r in self.world_view:
             print(r)
-
+        """
         if minimum == -1:
             self.current_path.append(go_to)
             return 
