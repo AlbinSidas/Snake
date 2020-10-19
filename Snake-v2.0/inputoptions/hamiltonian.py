@@ -12,22 +12,136 @@ class Hamilton():
     def __init__(self, world):
         width = len(world[0])
         height = len(world)
-
-        #self.graph = [[0] * (breadth - 1) for i in range(height)]
+        
         # Kan utgå från denna ovan men kommer behöva göra om den till en 2d graf
         # där ex 0 = 12*12 l'ngd och mot vilka den är länkad
         
-        number_of_nodes = (width)*(height)
+        #number_of_nodes = (width)*(height)
         #self.vertices = self.build_vertices(number_of_nodes)
         #self.V = self.build_vertices(number_of_nodes)
-        self.V = width*height- 1
+        #self.V = width*height- 1
+        """
         self.graph = [[0 for column in range(height)]
                          for row in range(width)]
-
+        """
+        #self.graph = [[0] * (width - 1) for i in range(height)]
+        vertices = width * height - 1
+        self.graph = self.build_vertices(vertices)
 
 
     def get_action(self, world_list, python, fruit, pygame):
+        #path = self.find_path(self.graph, 0, 0)
+
+        path = []
+        self.search_graph(0, path)
+        print(path)
+    """
+    def find_path(self, graph, start, end, path=[]):
+        path = path + [start]
+        if start == end:
+            return path
+        if not graph.has_key(start):
+            return None
+        for node in graph[start]:
+            if node not in path:
+                newpath = find_path(graph, node, end, path)
+                if newpath: return newpath
+        return None
+    """
+    """
+    Egen implementation:
+    Hitta hamiltonian cycle
+    i ett system av en undirected cyclic graph
+
+    göra det i !N
+
+    för varje nod jag besöker lägg till att besöka alla barnnoder och generera alla möjliga paths
+
+    Slutmålet är att alla noder ska vara inlkuderade en gång och start och stopp ska vara graph[0] + 12 (alltså under startnoden)
+    
+    Måste faktiskt inte göra alla permutationer för att hitta alla hamiltoncycler, utan kan stanna efter en har htitats.
+
+
+    ha alla noder i en lista, för varje steg i listan gå till en granne, (+-12 och +-1)
+    
+    rekursivt, kolla på första genom index,
+    i "barn" är de noder den är connectad till
+
+    kolla om om grannen är slutnoden
+        kolla om alla noder finns i pathen
+            Klar
+        gå till nästa alternativ då den sista noden inte ska besökas förrens sist
+
+    
+    
+    Kan ej göra det rekursivt eftersom det är för stor statespace.
+    
+    def search_graph(self, index, curr_path):
+        curr_path.append(index)
+        connections = self.graph[index]
+        for connection in connections:
+            if connection == 12:
+                temp = curr_path
+                temp = temp.sort()
+                if temp == list(range(143)):
+                    return curr_path
+            self.search_graph(connection, curr_path)
+    """
+    def search_graph(self, indx, curr_path):
+
+        # https://springerplus.springeropen.com/articles/10.1186/s40064-016-2746-8
+        # Algorithm 3 är värd att titta på som kan generera paths ser det et ut som
+
+        path = []
+        cntr = 0
+        indx = 0
+        go_to = []
+        visited = {}
+
+        while True:
+            print(indx)
+            if visited.get(indx, None) == None and indx != 12:
+                path.append(indx)
+                visited[indx] = 1
+            else:
+                try:
+                    indx = go_to.pop()
+                except:
+                    print(path)
+                    #print(len(path))
+                    #print(self.graph)
+                    #for r in self.graph:
+                    #    print(r)
+                    exit()
+                continue
+
+            # 12 kommer vara den slutgiltiga noden (under längst upp till vänster)
+            if indx == 12:
+                print(curr_path)
+                print("\n\n\nHITTAT 12\n\n\n")
+                temp = path
+                #temp = temp.sort()
+                if temp == list(range(143)):
+                    print("HITTAT EN PATH")
+                    break
+                else:
+                    continue
+
+            connections = self.graph[indx]
+            go_to += connections
+            for connection in connections:
+                if connection not in go_to:
+                    go_to.append(connection)
+            
+            indx = go_to.pop()
+
+            cntr += 1
+        
+        return path
+
+    """
         self.hamCycle()
+
 
     ##### SAXAT FRÅN SIDAN 
 
@@ -110,7 +224,7 @@ class Hamilton():
 
         ####### SAXX
 
-        
+    """
 
     def build_vertices(self, num_nodes):
         """
@@ -126,19 +240,22 @@ class Hamilton():
 
         dessa är de enda som är connectade
         """
-        graph = []
+        graph = {}
 
         for index in range(num_nodes):
-            connections = [0] * num_nodes
+            graph[index] = []
             
             if index + 12 < num_nodes:
-                connections[index + 12] = 1
-            if index - 1 > 0:
-                connections[index - 1] = 1
-            if index + 1 < num_nodes:
-                connections[index + 1] = 1
-            if index - 12 > 0:
-                connections[index - 12] = 1
-            graph.append(connections)
+                graph[index].append(index + 12)
+
+            # If index - 1 % 12 == 11 then it's reffering to the node from a row above
+            if index - 1 >= 0 and (index - 1) % 12 != 11:
+                graph[index].append(index - 1)
+
+            # If index - 1 % 12 == 0 then it's reffering to the node from the next row
+            if index + 1 < num_nodes and (index + 1) % 12 != 0:
+                graph[index].append(index + 1)
+            if index - 12 >= 0:
+                graph[index].append(index - 12)
         
         return graph

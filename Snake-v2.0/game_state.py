@@ -49,8 +49,9 @@ class Game_State:
             if action == "Quit":
                 game_over = True
             
-            #clock.tick(8)
-            clock.tick(20)
+            clock.tick(8)
+            #clock.tick(20)
+            
             self.python.update(action, self.world_list, fruit_list)
 
             if not self.python.alive:

@@ -45,13 +45,13 @@ class AStar():
             """
 
             self.current_path.reverse()
-            action = self.astar_action(snake_head) 
+            action = self.astar_action(snake_head)
             self.current_path = []
             return action
 
         #Turn the path around to not move the whole array for each pop
         self.current_path.reverse()
-        print(self.current_path)
+        #print(self.current_path)
         return self.astar_action(snake_head)
 
     def astar_action(self, head):
@@ -102,27 +102,11 @@ class AStar():
         
         go_to = None
         
-        
         for direction in direction_values:
-            
-            """
-            Kollar directions för att se om det går att hitta någon väg som är mindre 
-            och försäkrar sig om att om det är mindre inte finns i pathen sedan tidigare 
-
-            Om en riktning föreslås igen så har inte en optimal väg valts
-            """
-            
             if direction[0] < minimum and direction[1] not in self.current_path:
                 minimum = direction[0]
                 go_to = direction[1]
-        """
-        print()
-        print(self.current_path) 
-        print()
-
-        for r in self.world_view:
-            print(r)
-        """
+        
         if minimum == -1:
             self.current_path.append(go_to)
             return 
